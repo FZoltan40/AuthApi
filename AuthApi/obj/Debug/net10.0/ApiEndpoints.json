@@ -132,6 +132,22 @@
   },
   {
     "ContainingType": "AuthApi.Controllers.UserController",
+    "Method": "Login",
+    "RelativePath": "users/login",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "loginUserDto",
+        "Type": "AuthApi.Models.DTOs.LoginUserDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AuthApi.Controllers.UserController",
     "Method": "Register",
     "RelativePath": "users/register",
     "HttpMethod": "POST",

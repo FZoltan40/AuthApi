@@ -35,16 +35,15 @@ namespace AuthApi.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register(NewUserDto newUserDto)
         {
-            var hashPassword = _passwordHasher.HashPassword(newUserDto.Password).Hash;
-            var saltPassword = _passwordHasher.HashPassword(newUserDto.Password).Salt;
+            var (hash, salt) = _passwordHasher.HashPassword(newUserDto.Password!);
 
             var user = new User
             {
                 Id = Guid.NewGuid(),
                 Name = newUserDto.Name,
                 Email = newUserDto.Email,
-                Password = hashPassword,
-                Salt = saltPassword
+                Password = hash,
+                Salt = salt
             };
 
 
@@ -61,9 +60,24 @@ namespace AuthApi.Controllers
 
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login(NewUserDto newUserDto)
+        public async Task<IActionResult> Login([FromBody] LoginUserDto loginUserDto)
         {
-            
+            var user = await _context.Users.SingleOrDefaultAsync(u => u.Name == loginUserDto.Name);
+
+
+            if (user is null)
+            {
+                return NotFound( new { messgage = "Még nem rgisztrált" });
+            }
+
+            var isValid = _passwordHasher.Verify(loginUserDto.Password, user.Password, user.Salt);
+
+            if (isValid)
+            {
+                return Ok(new { messgage = "Regisztrált" });
+            }
+
+            return BadRequest(new { messgage = "Hibás felhasznló név vagy jelszó" });
         }
 
         [HttpDelete("delete")]
