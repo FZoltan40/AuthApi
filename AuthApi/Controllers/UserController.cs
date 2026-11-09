@@ -41,6 +41,7 @@ namespace AuthApi.Controllers
                 Password = newUserDto.Password
             };
 
+
             if (user != null)
             {
                 await _context.Users.AddAsync(user);
