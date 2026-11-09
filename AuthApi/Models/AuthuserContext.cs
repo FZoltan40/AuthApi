@@ -27,6 +27,8 @@ public partial class AuthuserContext : DbContext
 
             entity.ToTable("Roles", "AuthUser");
 
+            entity.HasIndex(e => e.Name, "Name").IsUnique();
+
             entity.Property(e => e.Name).HasMaxLength(40);
             entity.Property(e => e.RegTime)
                 .HasDefaultValueSql("CURRENT_TIMESTAMP")
@@ -45,6 +47,7 @@ public partial class AuthuserContext : DbContext
             entity.Property(e => e.Regtime)
                 .HasDefaultValueSql("CURRENT_TIMESTAMP")
                 .HasColumnType("datetime");
+            entity.Property(e => e.Salt).HasColumnType("text");
 
             entity.HasMany(d => d.Roles).WithMany(p => p.Users)
                 .UsingEntity<Dictionary<string, object>>(

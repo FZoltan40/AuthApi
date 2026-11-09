@@ -14,6 +14,8 @@ public partial class User
 
     public string? Password { get; set; }
 
+    public string? Salt { get; set; }
+
     public DateTime? Regtime { get; set; }
 
     [JsonIgnore]

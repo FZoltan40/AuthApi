@@ -1,0 +1,18 @@
+﻿using Org.BouncyCastle.Bcpg.OpenPgp;
+using System.Security.Cryptography;
+using System.Text;
+
+namespace AuthApi.Services
+{
+    public class PasswordHasher
+    {
+        public (string Hash, string Salt) HashPassword(string password)
+        {
+            var saltBytes = RandomNumberGenerator.GetBytes(16);
+            var hmac = new HMACSHA256(saltBytes);
+            var hashBytes = hmac.ComputeHash(Encoding.UTF8.GetBytes(password));
+
+            return (Convert.ToBase64String(hashBytes), Convert.ToBase64String(saltBytes));
+        }
+    }
+}
