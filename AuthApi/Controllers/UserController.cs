@@ -1,5 +1,6 @@
 ﻿using AuthApi.Models;
 using AuthApi.Models.DTOs;
+using AuthApi.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -11,10 +12,11 @@ namespace AuthApi.Controllers
     public class UserController : ControllerBase
     {
         private readonly AuthuserContext _context;
-
-        public UserController(AuthuserContext context)
+        private readonly PasswordHasher _passwordHasher;
+        public UserController(AuthuserContext context, PasswordHasher passwordHasher)
         {
             _context = context;
+            _passwordHasher = passwordHasher;
         }
 
         [HttpGet("getAllUsers")]
@@ -33,12 +35,16 @@ namespace AuthApi.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register(NewUserDto newUserDto)
         {
+            var hashPassword = _passwordHasher.HashPassword(newUserDto.Password).Hash;
+            var saltPassword = _passwordHasher.HashPassword(newUserDto.Password).Salt;
+
             var user = new User
             {
                 Id = Guid.NewGuid(),
                 Name = newUserDto.Name,
                 Email = newUserDto.Email,
-                Password = newUserDto.Password
+                Password = hashPassword,
+                Salt = saltPassword
             };
 
 
@@ -51,6 +57,13 @@ namespace AuthApi.Controllers
             }
 
             return BadRequest();
+        }
+
+
+        [HttpPost("login")]
+        public async Task<IActionResult> Login(NewUserDto newUserDto)
+        {
+            
         }
 
         [HttpDelete("delete")]
