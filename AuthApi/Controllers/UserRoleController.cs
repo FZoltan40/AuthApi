@@ -104,6 +104,8 @@ namespace AuthApi.Controllers
                 {
                     return StatusCode(200, new { message = "Sikeres belépés" });
                 }
+
+                return StatusCode(401, new { message = "Hibás email vagy jelszó" });
             }
             catch (Exception e)
             {
