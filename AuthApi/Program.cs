@@ -1,8 +1,11 @@
 
 using AuthApi.Models;
 using AuthApi.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Scalar.AspNetCore;
+using System.Text;
 
 namespace AuthApi
 {
@@ -17,6 +20,31 @@ namespace AuthApi
             );
 
             builder.Services.AddScoped<PasswordHasher>();
+            builder.Services.AddScoped<GenerateToken>();
+
+            var secret = "Ide-jon-a-szoveg-ami-egyedi-azonosito-lesz-a-token-generalasahoz";
+            var issuer = "auth-api";
+            var audience = "auth-client";
+
+            var key = Encoding.ASCII.GetBytes(secret);
+
+            builder.Services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(jwt =>
+            {
+                jwt.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(key),
+                    ValidateIssuer = true,
+                    ValidIssuer = issuer,
+                    ValidAudience = audience,
+                    ValidateAudience = true
+                };
+            });
+
 
             // Add services to the container.
 
@@ -35,7 +63,8 @@ namespace AuthApi
 
             app.UseHttpsRedirection();
 
-            app.UseAuthorization();
+            app.UseAuthentication();//ez az első
+            app.UseAuthorization();//ez a második a szekvenciában
 
 
             app.MapControllers();
