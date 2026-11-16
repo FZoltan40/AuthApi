@@ -13,11 +13,13 @@ namespace AuthApi.Controllers
     {
         private readonly AuthuserContext _context;
         private readonly PasswordHasher _passwordHasher;
+        private readonly GenerateToken _generateToken;
 
-        public UserRoleController(AuthuserContext context, PasswordHasher passwordHasher)
+        public UserRoleController(AuthuserContext context, PasswordHasher passwordHasher, GenerateToken generateToken)
         {
             _context = context;
             _passwordHasher = passwordHasher;
+            _generateToken = generateToken;
         }
 
         [HttpPost("assignRole")]
@@ -91,7 +93,8 @@ namespace AuthApi.Controllers
             try
             {
 
-                var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == loginUserDto.Email);
+                var user = await _context.Users.Include(u => u.Roles)
+                    .FirstOrDefaultAsync(u => u.Email == loginUserDto.Email);
 
                 if (user is null)
                 {
@@ -102,7 +105,9 @@ namespace AuthApi.Controllers
 
                 if (isValid)
                 {
-                    return StatusCode(200, new { message = "Sikeres belépés" });
+                    var newToken = _generateToken.Token(user.Id,user.Email!,user.Roles);
+                    return StatusCode(200, new { message = "Sikeres belépés" , token = newToken  });
+
                 }
 
                 return StatusCode(401, new { message = "Hibás email vagy jelszó" });

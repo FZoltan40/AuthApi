@@ -1,6 +1,7 @@
 ﻿using AuthApi.Models;
 using AuthApi.Models.DTOs;
 using AuthApi.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -9,6 +10,7 @@ namespace AuthApi.Controllers
 {
     [Route("users")]
     [ApiController]
+   
     public class UserController : ControllerBase
     {
         private readonly AuthuserContext _context;
@@ -19,6 +21,7 @@ namespace AuthApi.Controllers
             _passwordHasher = passwordHasher;
         }
 
+        [Authorize(Roles = "teacher")]
         [HttpGet("getAllUsers")]
         public async Task<IActionResult> GetAllUsers()
         {
