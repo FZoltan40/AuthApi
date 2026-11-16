@@ -6,6 +6,9 @@
   },
   "servers": [
     {
+      "url": "https://localhost:7278"
+    },
+    {
       "url": "http://localhost:5120"
     }
   ],
@@ -150,38 +153,6 @@
             "application/*+json": {
               "schema": {
                 "$ref": "#/components/schemas/NewUserDto"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/users/login": {
-      "post": {
-        "tags": [
-          "User"
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/LoginUserDto"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/LoginUserDto"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/LoginUserDto"
               }
             }
           },

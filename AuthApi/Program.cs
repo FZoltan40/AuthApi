@@ -21,10 +21,11 @@ namespace AuthApi
 
             builder.Services.AddScoped<PasswordHasher>();
             builder.Services.AddScoped<GenerateToken>();
+            //builder.Services.AddScoped<IConfiguration>();
 
-            var secret = "Ide-jon-a-szoveg-ami-egyedi-azonosito-lesz-a-token-generalasahoz";
-            var issuer = "auth-api";
-            var audience = "auth-client";
+            var secret = builder.Configuration.GetSection("Token:secret").Value; ;//Legalább 32 karakter hossz legyen
+            var issuer = builder.Configuration.GetSection("Token:issuer").Value;
+            var audience = builder.Configuration.GetSection("Token:client").Value;
 
             var key = Encoding.ASCII.GetBytes(secret);
 

@@ -9,10 +9,17 @@ namespace AuthApi.Services
 {
     public class GenerateToken
     {
+        private readonly IConfiguration _configuration;
+
+        public GenerateToken(IConfiguration configuration)
+        {
+            _configuration = configuration;
+        }
+
         public string Token(Guid id, string email, ICollection<Role> role)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes("Ide-jon-a-szoveg-ami-egyedi-azonosito-lesz-a-token-generalasahoz");
+            var key = Encoding.ASCII.GetBytes(_configuration.GetSection("Token:secret").Value!);
 
             var claimList = new List<Claim>
             {
@@ -27,8 +34,8 @@ namespace AuthApi.Services
 
             var tokenDescription = new SecurityTokenDescriptor
             {
-                Audience = "auth-client",
-                Issuer = "auth-api",
+                Audience = _configuration.GetSection("Token:audience").Value,
+                Issuer = _configuration.GetSection("Token:issuer").Value,
                 Subject = new ClaimsIdentity(claimList),
                 Expires = DateTime.Now.AddDays(1),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
