@@ -61,28 +61,6 @@ namespace AuthApi.Controllers
             return BadRequest();
         }
 
-
-        [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] LoginUserDto loginUserDto)
-        {
-            var user = await _context.Users.SingleOrDefaultAsync(u => u.Name == loginUserDto.Email);
-
-
-            if (user is null)
-            {
-                return NotFound( new { messgage = "Még nem rgisztrált" });
-            }
-
-            var isValid = _passwordHasher.Verify(loginUserDto.Password, user.Password, user.Salt);
-
-            if (isValid)
-            {
-                return Ok(new { messgage = "Regisztrált" });
-            }
-
-            return BadRequest(new { messgage = "Hibás felhasznló név vagy jelszó" });
-        }
-
         [HttpDelete("delete")]
         public async Task<IActionResult> Delete([FromQuery]Guid id)
         {
