@@ -98,12 +98,16 @@ namespace AuthApi.Controllers
                     return StatusCode(404, new { message = "Nincs ilyen registrált tag" });
                 }
 
-                var isValid = 
-            }
-            catch (Exception)
-            {
+                var isValid = _passwordHasher.Verify(loginUserDto.Password!,user.Password!,user.Salt!);
 
-                throw;
+                if (isValid)
+                {
+                    return StatusCode(200, new { message = "Sikeres belépés" });
+                }
+            }
+            catch (Exception e)
+            {
+                return StatusCode(400, new { message = e.Message});
             }
         }
     }
