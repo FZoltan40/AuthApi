@@ -90,6 +90,22 @@
   },
   {
     "ContainingType": "AuthApi.Controllers.UserRoleController",
+    "Method": "Login",
+    "RelativePath": "userrole/login",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "loginUserDto",
+        "Type": "AuthApi.Models.DTOs.LoginUserDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AuthApi.Controllers.UserRoleController",
     "Method": "LoginUser",
     "RelativePath": "userrole/loginUser",
     "HttpMethod": "POST",
